@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Store {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  storeItems StoreItem[]
+  orders     Order[]
+}
+
+model Item {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  storeItems StoreItem[]
+}
+
+model StoreItem {
+  id String @id @default(uuid())
+
+  storeId String
+  itemId  String
+
+  price Decimal @db.Decimal(10, 2)
+  stock Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  store      Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  item       Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+
+  @@unique([storeId, itemId])
+}
+
+model Order {
+  id String @id @default(uuid())
+
+  storeId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  store      Store       @relation(fields: [storeId], references: [id])
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id String @id @default(uuid())
+
+  orderId     String
+  storeItemId String
+
+  quantity Int
+
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  storeItem StoreItem @relation(fields: [storeItemId], references: [id])
+
+  @@unique([orderId, storeItemId])
+}
