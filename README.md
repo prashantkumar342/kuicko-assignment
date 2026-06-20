@@ -240,9 +240,3 @@ This design explicitly supports:
 * Efficient Prisma Queries (Strictly 1 query handling relations—No N+1)
 * Clean Modular Architecture
 * Production-ready Project Structure
-
----
-
-# 👨💻 Author
-
-Developed as part of the **Kuicko Backend Developer Hiring Task** utilizing modern NestJS and Prisma best practices.
